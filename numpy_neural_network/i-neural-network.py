@@ -117,6 +117,7 @@ def single_layer_backward_proppagation(dA_curr, W_curr, b_curr, Z_curr, A_prev, 
 
     # 这块不太懂
     dZ_curr = backward_activation_func(dA_curr, Z_curr)
+    # 为什么要 / m
     dW_curr = np.dot(dZ_curr, A_prev.T) / m
     db_curr = np.sum(dZ_curr, axis=1, keepdims=True) / m
     dA_prev = np.dot(W_curr.T, dZ_curr)
@@ -150,6 +151,8 @@ def full_backward_propagation(Y_hat, Y, memory, params_values, nn_architecture):
         grads_values["dW" + str(layer_idx_curr)] = dW_curr
         grads_values["db" + str(layer_idx_curr)] = db_curr
 
+        # print(layer_idx_curr)
+
     return grads_values
 
 
@@ -158,6 +161,7 @@ def update(params_values, grads_values, nnarchitecture, learning_rate):
     for layer_idx, layer in enumerate(nnarchitecture, 1):
         params_values["W" + str(layer_idx)] -= learning_rate * grads_values["dW" + str(layer_idx)]
         params_values["b" + str(layer_idx)] -= learning_rate * grads_values["db" + str(layer_idx)]
+        # print(layer_idx)
 
     return params_values
 
@@ -225,5 +229,5 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=TEST_SIZE, random_state=42)
     print(X.shape)
     print(y.shape)
-    make_plot(X, y, "DataSet")
-
+    # make_plot(X, y, "DataSet")
+    params_values = train(np.transpose(X_train), np.transpose(y_train.reshape((y_train.shape[0], 1))), NN_ARCHITECTURE, 10000, 0.01)
